@@ -57,9 +57,9 @@ s2.height:0x7ffc804acb50
 s2.weight:0x7ffc804acb58
 s2.tag:0x7ffc804acb60
 ````
-id`が4bytes、`name`配列が340bytes、`age`が8bytes、`height`が8bytes、`weight`が8bytes、`tag`が（前述のs1の先頭アドレスとの比較から）16bytes使っていることがわかる。
+`id`が4bytes、`name`配列が340bytes、`age`が8bytes、`height`が8bytes、`weight`が8bytes、`tag`が（前述のs1の先頭アドレスとの比較から）16bytes使っていることがわかる。
 `age`の後にパディング4bytes、`name`配列の後にパディングが存在している。
-また構造体`Student`との差は、最後の`char`型の`tag`のあるなしであるが、tagの後にパディングが15bytes存在している。
+また構造体`Student`との差は、最後の`char`型の`tag`のあるなしであるが、`tag`の後にパディングが15bytes存在している。
 ## 構造体TStudent2
 ```
 typedef struct tagged_student2
@@ -94,7 +94,7 @@ s3.weight:0x7ffc804acad8
 ```
 `tag`が4bytes,`id`が4bytes、`s_end`の`name`配列が340bytes、`s3`の`name`配列が100bytes(1x100)、`age`が4bytes、`height`が8bytes、`weight`が8bytes、使っていることがわかる。
 `tag`の後にパディングが3bytes、一回目の`name`配列の後にパディングが存在している。
-また構造体`Student1`との差は`char`型の`tag`の場所であるが、tagの後のパディングが減っていることが確認できる。
+また構造体`Student1`との差は`char`型の`tag`の場所であるが、`tag`の後のパディングが減っていることが確認できる。
 
 ## 構造体のアドレス
 構造体の先頭アドレスは以下のようになっていた。
