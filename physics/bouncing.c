@@ -75,7 +75,7 @@ void my_plot_objects(Object objs[], const size_t numobj, const double t, const C
     }
     printf("t = %3.1lf",t);
     for(int i = 0; i < numobj; i++){
-        printf(",objs[%d].y = %7.2lf",i,objs[i].y);
+        printf(", objs[%d].y = %7.2lf",i,objs[i].y);
         if(i == (numobj - 1)){
             printf("\n");
         }
