@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 // 最終的には physics.h 内の、こちらが用意したプロトタイプをコメントアウト
 void my_plot_objects(Object objs[], const size_t numobj, const double t, const Condition cond){
     for(int y = -1*cond.height/2; y < cond.height/2 ; y++){
-        for(int x = -1*cond.width/2; x < cond.width/2 ; x++){
+        for(int x = -1*cond.width/2; x < cond.width/2 + 1 ; x++){
             if(x == 0){
                 for(int i = 0; i < numobj; i++){
                     if((int)objs[i].y == y){
