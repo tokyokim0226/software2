@@ -72,7 +72,7 @@ typedef struct tagged_student2
   double weight;
 } TStudent2;
 ```
-を用いて構造体`s3,s_end`を作成した。
+を用いて構造体`s3`,`s_end`を作成した。
 構造体のサイズと、そのメンバのアドレスは以下のようになった。
 ```
 s3:128
@@ -108,11 +108,11 @@ s_begin:0x7ffc804acbf0
 構造体の先頭アドレスと各構造体の最初のメンバのアドレスが等しいことがわかる。
 
 ## まとめ
-構造体`Student`においては、`double`の前の`int`に4bytes、二回目の構造体使用時の`char`型配列にパディングがなされていた。
+`Student`クラスの構造体`s_begin`、`s1`においては、`double`の前の`int`に4bytesのパディングがあり、`s_begin`の`char`型配列にパディングがなされていた。
 
-構造体`Student`の最後のメンバに`char`型の`tag`を足した構造体`Student1`では、`double`の前の`int`に4bytes、doubleの後の`char`に15bytes、`char`配列にパディングがなされていた。
+構造体`Student`の最後のメンバに`char`型の`tag`を足した`Student1`の構造体`s2`では、`double`の前の`int`に4bytes、doubleの後の`char`に15bytes、`char`配列にパディングがなされていた。
 
-構造体`Student1`において`tag`を最初のメンバにした構造体`Student2`においては、`int`の前の`char`に3bytes、一回目の構造体使用時の`char`配列にパディングがなされていた。
+構造体`Student1`において`tag`を最初のメンバにした`Student2`クラスの構造体`s3`、`s_end`においては、`int`の前の`char`に3bytes、`s_end`の`char`配列にパディングがなされていた。
 また`double`の前の`int`に対するパディングはなくなっていた。
 
 以上のことをまとめると、基本は近く（特に後ろ）のメンバ変数(`double`、`int`型の)と同じサイズになるようにパディングがなされるが、ほかにもパディングの条件（構造体の宣言回数？、その時のスタックの使用の様子？など）があるようにおもわれる。
