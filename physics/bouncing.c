@@ -106,12 +106,17 @@ void my_update_positions(Object objs[], const size_t numobj, const Condition con
     }
 }
 void my_bounce(Object objs[], const size_t numobj, const Condition cond){
-    //for(int i = 0; i < numobj; i++){
-        if((objs[0].y >= cond.height/2 - 1) || (objs[0].y <= -1*cond.height/2)){
-            objs[0].vy = -1 * objs[0].prev_vy;
-            objs[0].y = objs[0].prev_y;
+        if(objs[0].y >= cond.height/2 ){
+            // t = (cond.height/2 - objs[0].prev_y)/objs[0].prev_vy;
+            // a = cond.G * objs[1].m/(pow(fabs(objs[1].prev_y - objs[0].prev_y),3))*(objs[1].prev_y - objs[0].prev_y);
+            // objs[0].vy = -1 * cond.cor *  (objs[0].vy + a*t);
+            // objs[0].y = cond.height/2  + (objs[0].vy * (cond.dt - t));
+            objs[0].vy = -1 * cond.cor * objs[0].vy;
+            objs[0].y = cond.height/2 - (objs[0].y - cond.height/2);
+        }else if(objs[0].y <= -1*cond.height/2){
+            objs[0].vy = -1 * cond.cor * objs[0].vy;
+            objs[0].y = -1 * cond.height/2 - (objs[0].y - -1 * cond.height/2);
         }
-    //}
 }
 
 
