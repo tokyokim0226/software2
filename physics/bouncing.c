@@ -90,7 +90,9 @@ void my_update_velocities(Object objs[], const size_t numobj, const Condition co
         objs[i].prev_vy = objs[i].vy;
         for(int j = 0; j < numobj; j++){
             if(i != j){
-                a[i] += objs[j].m/(pow(fabs(objs[j].y - objs[i].y),3))*(objs[j].y - objs[i].y);
+                if((objs[i].y - objs[i].y) != 0){
+                    a[i] += objs[j].m/(pow(fabs(objs[j].y - objs[i].y),3))*(objs[j].y - objs[i].y);
+                }
             }
         }
          a[i] *= cond.G;
@@ -106,17 +108,15 @@ void my_update_positions(Object objs[], const size_t numobj, const Condition con
     }
 }
 void my_bounce(Object objs[], const size_t numobj, const Condition cond){
-        if(objs[0].y >= cond.height/2 ){
-            // t = (cond.height/2 - objs[0].prev_y)/objs[0].prev_vy;
-            // a = cond.G * objs[1].m/(pow(fabs(objs[1].prev_y - objs[0].prev_y),3))*(objs[1].prev_y - objs[0].prev_y);
-            // objs[0].vy = -1 * cond.cor *  (objs[0].vy + a*t);
-            // objs[0].y = cond.height/2  + (objs[0].vy * (cond.dt - t));
-            objs[0].vy = -1 * cond.cor * objs[0].vy;
-            objs[0].y = cond.height/2 - (objs[0].y - cond.height/2);
-        }else if(objs[0].y <= -1*cond.height/2){
+    for(int i = 0; i < numobj; i++){
+        if((objs[i].y >= cond.height/2) && (objs[i].prev_y <= cond.height/2)){
+            objs[i].vy = -1 * cond.cor * objs[i].vy;
+            objs[i].y = cond.height/2 - (objs[i].y - cond.height/2);
+        }else if((objs[0].y <= -1*cond.height/2) && (objs[i].prev_y >= -1*cond.height/2)){
             objs[0].vy = -1 * cond.cor * objs[0].vy;
             objs[0].y = -1 * cond.height/2 - (objs[0].y - -1 * cond.height/2);
         }
+    }
 }
 
 
