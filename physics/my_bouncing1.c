@@ -15,14 +15,13 @@ int main(int argc, char **argv)
      .cor = 0.8
     };
   
-  size_t objnum = 4;
+  size_t objnum = 3;
   Object objects[objnum];
 
   // objects[1] は巨大な物体を画面外に... 地球のようなものを想定
   objects[0] = (Object){ .m = 60.0, .y = -19.9, .vy = 2.0, .x = -30, .vx = 0.5};
-  objects[1] = (Object){ .m = 60.0, .y = -19.9, .vy = 2.0, .x = 30, .vx = 0.5};
-  objects[2] = (Object){ .m = 60.0, .y = -19.9, .vy = 2.0, .x = 30, .vx = 0.5};
-  objects[3] = (Object){ .m = 100000.0, .y =  1000.0, .vy = 1.0, .x = 0, .vx = 0.0};
+  objects[1] = (Object){ .m = 60.0, .y = -15, .vy = 1.0, .x = 34, .vx = 1};
+  objects[2] = (Object){ .m = 60.0, .y = -12, .vy = 1.5, .x = 15, .vx = 0.3};
 
   // シミュレーション. ループは整数で回しつつ、実数時間も更新する
   const double stop_time = 400;
@@ -36,7 +35,7 @@ int main(int argc, char **argv)
     // 表示の座標系は width/2, height/2 のピクセル位置が原点となるようにする
     my_plot_objects(objects, objnum, t, cond);
     
-    usleep(200 * 100); // 200 x 1000us = 200 ms ずつ停止
+    usleep(200 * 1000); // 200 x 1000us = 200 ms ずつ停止
     printf("\e[%dA", cond.height+3);// 壁とパラメータ表示分で3行
   }
   return EXIT_SUCCESS;
@@ -88,7 +87,7 @@ void my_plot_objects(Object objs[], const size_t numobj, const double t, const C
 void my_update_velocities(Object objs[], const size_t numobj, const Condition cond){
     double ax[numobj];
     double ay[numobj];
-    double distance = 0;
+    double distance = 0;   
     for(int i = 0; i < numobj; i++){
         ax[i] = 0;
         ay[i] = 0;
@@ -99,10 +98,8 @@ void my_update_velocities(Object objs[], const size_t numobj, const Condition co
         for(int j = 0; j < numobj; j++){
             if(i != j){
                 distance = sqrt((pow((objs[i].x - objs[j].x),2) + pow((objs[i].y - objs[j].y),2)));
-                if((objs[i].x - objs[j].x) != 0){
+                if(distance >= 3){          //飛びすぎ防止
                     ax[i] += objs[j].m/(pow(distance,3))*(objs[j].x - objs[i].x);
-                }
-                if((objs[i].y - objs[j].y) != 0){
                     ay[i] += objs[j].m/(pow(distance,3))*(objs[j].y - objs[i].y);
                 }
             }
@@ -125,26 +122,28 @@ void my_update_positions(Object objs[], const size_t numobj, const Condition con
 }
 void my_bounce(Object objs[], const size_t numobj, const Condition cond){
     for(int i = 0; i < numobj; i++){
-        if((objs[i].y >= cond.height/2) && (objs[i].prev_y <= cond.height/2)){
+        if((objs[i].y >= cond.height/2) && (objs[i].prev_y < cond.height/2)){
             objs[i].vy = -1 * cond.cor * objs[i].vy;
             objs[i].y = cond.height/2 - (objs[i].y - cond.height/2);
-        }else if((objs[0].y <= -1*cond.height/2) && (objs[i].prev_y >= -1*cond.height/2)){
-            objs[0].vy = -1 * cond.cor * objs[0].vy;
-            objs[0].y = -1 * cond.height/2 - (objs[0].y - -1 * cond.height/2);
         }
-        if((objs[i].x >= cond.width/2) && (objs[i].prev_x <= cond.width/2)){
+        if((objs[i].y <= -1*cond.height/2) && (objs[i].prev_y > -1*cond.height/2)){
+            objs[i].vy = -1 * cond.cor * objs[i].vy;
+            objs[i].y = -1 * cond.height/2 - (objs[i].y - -1 * cond.height/2);
+        }
+        if((objs[i].x >= cond.width/2) && (objs[i].prev_x < cond.width/2)){
             objs[i].vx = -1 * cond.cor * objs[i].vx;
             objs[i].x = cond.width/2 - (objs[i].x - cond.width/2);
-        }else if((objs[0].x <= -1*cond.width/2) && (objs[i].prev_x >= -1*cond.width/2)){
-            objs[0].vx = -1 * cond.cor * objs[0].vx;
-            objs[0].x = -1 * cond.width/2 - (objs[0].x - -1 * cond.width/2);
+        }
+        if((objs[i].x <= -1*cond.width/2) && (objs[i].prev_x > -1*cond.width/2)){
+            objs[i].vx = -1 * cond.cor * objs[i].vx;
+            objs[i].x = -1 * cond.width/2 - (objs[i].x - -1 * cond.width/2);
         }
     }
     for(int i = 0; i < numobj; i++){
         for(int j = 0; j < numobj; j++){
             if(i != j){
                 if((objs[i].y == objs[j].y) && (objs[i].x == objs[j].x)){
-                    
+
                 }
             }
         }
