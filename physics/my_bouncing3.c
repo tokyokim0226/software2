@@ -186,14 +186,16 @@ void my_fusion_objects(Object objs[],const size_t numobj){
             if(i != j){
                 distance = sqrt((pow((objs[i].x - objs[j].x),2) + pow((objs[i].y - objs[j].y),2)));
                 if(distance <= 3){    
-                    objs[i].vx = (objs[i].m*objs[i].vx + objs[j].m*objs[j].vx)/(objs[i].m + objs[j].m);
-                    objs[i].vy = (objs[i].m*objs[i].vy + objs[j].m*objs[j].vy)/(objs[i].m + objs[j].m);
-                    objs[i].m = objs[i].m + objs[j].m;
-                    objs[j].m = 0;
-                    objs[j].y = 1000;
-                    objs[j].x = 0;
-                    objs[j].vy = 0;
-                    objs[j].vx = 0;
+                    if((objs[i].m + objs[j].m) != 0){
+                        objs[i].vx = (objs[i].m*objs[i].vx + objs[j].m*objs[j].vx)/(objs[i].m + objs[j].m);
+                        objs[i].vy = (objs[i].m*objs[i].vy + objs[j].m*objs[j].vy)/(objs[i].m + objs[j].m);
+                        objs[i].m = objs[i].m + objs[j].m;
+                        objs[j].m = 0;
+                        objs[j].y = 1000;
+                        objs[j].x = 0;
+                        objs[j].vy = 0;
+                        objs[j].vx = 0;
+                    }
                 }
             }
         
