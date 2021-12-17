@@ -20,30 +20,16 @@ int main(int argc, char **argv)
      return -1;
  }
   size_t objnum = atoi(argv[1]);
-  char buf[200];
+ 
   Object objects[objnum];
-  
-  int sharp_count = 0;
   FILE *fp = fopen(argv[2],"r");
   if(fp == NULL){
         printf("cannot open file\n");
-        return -1;
-  }else{
-    while(buf[0] == '#'){
-        fscanf(fp, "%[^\n]%*1[\n]", buf);
-        sharp_count++;
-    }
-    fseek(fp,0L,SEEK_SET);
-    for(int i = 0; i < sharp_count - 1; i++){
-        fscanf(fp, "%[^\n]%*1[\n]", buf);
-    }
-    for(int i = 0; i < objnum; i++){
-        //fscanf(fp, "%[^\n]%*1[\n]", buf);
-        //sscanf(buf,"%lf %lf %lf %lf %lf\n", &objects[i].m, &objects[i].x, &objects[i].vx, &objects[i].y, &objects[i].vy);
-        fscanf(fp,"%lf %lf %lf %lf %lf %[^\n]%*1[\n]", &objects[i].m, &objects[i].x, &objects[i].vx, &objects[i].y, &objects[i].vy, buf);
-    }
-    fclose(fp);
+        return EXIT_FAILURE;
   }
+  
+  my_read_file(fp,objects,objnum);
+  
   // シミュレーション. ループは整数で回しつつ、実数時間も更新する
   const double stop_time = 400;
   double t = 0;
@@ -64,6 +50,28 @@ int main(int argc, char **argv)
 
 // 実習: 以下に my_ で始まる関数を実装する
 // 最終的に phisics2.h 内の事前に用意された関数プロトタイプをコメントアウト
+int my_read_file(FILE *fp,Object objs[],const size_t numobj){
+  char buf[200];
+    int i = 0;
+    while(fscanf(fp, "%[^\n]%*1[\n]", buf) != EOF){
+        if(buf[0] == '#'){
+
+        }else{
+            if(i >= numobj){
+                break;
+            }
+            sscanf(buf,"%lf %lf %lf %lf %lf\n", &objs[i].m, &objs[i].x, &objs[i].y, &objs[i].vx, &objs[i].vy);
+            i++;
+        }
+    }
+    fclose(fp);
+    if(i < numobj){
+        for(int j = i; j< numobj; j++){
+            objs[j] = (Object){ .m = 0, .y = 1000, .vy = 0, .x = 0, .vx = 0};
+        }
+    }
+}
+
 void my_plot_objects(Object objs[], const size_t numobj, const double t, const Condition cond){
     for(int y = -1*cond.height/2 -1; y < cond.height/2 + 1 ; y++){
         for(int x = -1*cond.width/2 - 1 ; x < cond.width/2 + 1 ; x++){
