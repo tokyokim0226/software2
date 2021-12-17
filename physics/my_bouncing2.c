@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 
 // 実習: 以下に my_ で始まる関数を実装する
 // 最終的に phisics2.h 内の事前に用意された関数プロトタイプをコメントアウト
-int my_read_file(FILE *fp,Object objs[],const size_t numobj){
+void my_read_file(FILE *fp,Object objs[],const size_t numobj){
   char buf[200];
     int i = 0;
     while(fscanf(fp, "%[^\n]%*1[\n]", buf) != EOF){
