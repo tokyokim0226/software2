@@ -90,7 +90,7 @@ void my_update_velocities(Object objs[], const size_t numobj, const Condition co
         objs[i].prev_vy = objs[i].vy;
         for(int j = 0; j < numobj; j++){
             if(i != j){
-                if((objs[i].y - objs[i].y) != 0){
+                if((objs[i].y - objs[j].y) != 0){
                     a[i] += objs[j].m/(pow(fabs(objs[j].y - objs[i].y),3))*(objs[j].y - objs[i].y);
                 }
             }
