@@ -39,4 +39,6 @@ void my_update_velocities(Object objs[], const size_t numobj, const Condition co
 void my_update_positions(Object objs[], const size_t numobj, const Condition cond);
 void my_bounce(Object objs[], const size_t numobj, const Condition cond);
 void my_read_file(FILE *fp,Object objs[],const size_t numobj);
+void my_fusion_objects(Object objs[],const size_t numobj);
+
 
