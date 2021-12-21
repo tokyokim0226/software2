@@ -29,9 +29,10 @@ s_begin.age:0x7ffe821d6108
 s_begin.height:0x7ffe821d6110
 s_begin.weight:0x7ffe821d6118
 ```
-`id`が4bytes、`s_begin`の`name`配列が340bytes、`s1`の`name`配列が100bytes、`age`が8bytes、`height`が8bytes、`weight`が8bytes使っていることがわかる。
+`id`が4bytes、`name`配列が100bytes、`age`が8bytes、`height`が8bytes、`weight`が8bytes使っていることがわかる。
 `age`の後にパディングが4bytesあることがわかる。(`sizeof()`を使うと、`age`は4bytesになっているので、8-4=4)
-また`s_begin`の`name`配列においてもサイズが4の倍数になるようにパディングが340bytesあることがわかる。
+
+また`s_begin`の`name`配列においてはサイズが340bytesあるように見えるが、構造体の実態のサイズは128bytesであるので、実際の大きさは100bytesであると予想できる。
 ## 構造体TStudent1
 ```
 typedef struct tagged_student1
@@ -58,7 +59,8 @@ s2.weight:0x7ffe821d6008
 s2.tag:0x7ffe821d6010
 ````
 `id`が4bytes、`name`配列が100bytes、`age`が8bytes、`height`が8bytes、`weight`が8bytes、`tag`が（136と今までの合計の差から）8bytes使っていることがわかる。
-`age`の後にパディング4bytes、`name`配列の後にパディングが存在している。
+`age`の後に4bytesパディングが存在している。
+
 また構造体`Student`との差は、最後の`char`型の`tag`のあるなしであるが、`tag`の後にパディングが7bytes存在している。
 ## 構造体TStudent2
 ```
@@ -93,26 +95,27 @@ s3.height:0x7ffe821d5f80
 s3.weight:0x7ffe821d5f88
 ```
 `tag`が4bytes,`id`が4bytes、`name`配列が100bytes(1x100)、`age`が4bytes、`height`が8bytes、`weight`が8bytes、使っていることがわかる。
-`tag`の後にパディングが3bytes、一回目の`name`配列の後にパディングが存在している。
+`tag`の後にパディングが3bytes存在している。
+
 また構造体`Student1`との差は`char`型の`tag`の場所であるが、`tag`の後のパディングが減っていることが確認できる。
 
 ## 構造体のアドレス
 構造体の先頭アドレスは以下のようになっていた。
 ```
-s_end:0x7ffc804ac9e0
-s3:0x7ffc804aca60
-s2:0x7ffc804acae0
-s1:0x7ffc804acb70
-s_begin:0x7ffc804acbf0
+s_end:0x7ffe821d5e90
+s3:0x7ffe821d5f10
+s2:0x7ffe821d5f90
+s1:0x7ffe821d6020
+s_begin:0x7ffe821d60a0
 ```
 構造体の先頭アドレスと各構造体の最初のメンバのアドレスが等しいことがわかる。
 
 ## まとめ
-`Student`クラスの構造体`s_begin`、`s1`においては、`double`の前の`int`に4bytesのパディングがあり、`s_begin`の`char`型配列にパディングがなされていた。
+`Student`クラスの構造体`s_begin`、`s1`においては、`double`の前の`int`に4bytesのパディングがなされていた。
 
-構造体`Student`の最後のメンバに`char`型の`tag`を足した`Student1`の構造体`s2`では、`double`の前の`int`に4bytes、doubleの後の`char`に7bytes、パディングがなされていた。
+構造体`Student`の最後のメンバに`char`型の`tag`を足した`Student1`の構造体`s2`では、`double`の前の`int`に4bytes、doubleの後の`char`に7bytesのパディングがなされていた。
 
 構造体`Student1`において`tag`を最初のメンバにした`Student2`クラスの構造体`s3`、`s_end`においては、`int`の前の`char`に3bytesパディングがなされていた。
 また`double`の前の`int`に対するパディングはなくなっていた。
 
-以上のことをまとめると、基本は近く（特に後ろ）のメンバ変数(`double`、`int`型の)と同じサイズになるようにパディングがなされるが、ほかにもパディングの条件（構造体の宣言回数？、その時のスタックの使用の様子？など）があるようにおもわれる。
+以上のことをまとめると、基本は近く（特に後ろ）のメンバ変数(`double`、`int`型など)と同じサイズになるようにパディングがなされるが、ほかにもパディングの条件（構造体の宣言回数？、その時のスタックの使用の様子？など）があるようにおもわれる。
