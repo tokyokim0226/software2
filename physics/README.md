@@ -19,5 +19,8 @@
 
 そののち下のブロックを標準入力から動かし、ボールが生き延びる時間がスコアになる。
 
+## 参考文献
+以下のウェブサイトからkbhit関数を引用した
 
+https://hotnews8.net/programming/tricky-code/c-code03
 
