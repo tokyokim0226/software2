@@ -26,10 +26,10 @@ typedef struct object
 
 typedef struct stage{
     int block_number;
-    int block_position_x[5];
-    int block_position_y[5];
-    int block_width[5];
-    int block_height[5];
+    int block_position_x[10];
+    int block_position_y[10];
+    int block_width[10];
+    int block_height[10];
 } Stage;
 
 // 授業で用意した関数のプロトタイプ宣言

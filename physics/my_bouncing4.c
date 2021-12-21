@@ -29,8 +29,8 @@ int main(int argc, char **argv)
   stage[0] = (Stage){.block_number = 2, .block_position_x = {-20,5}, .block_position_y = {-10,10}, .block_height = {10,5}, .block_width = {5,10}};
   stage[1] = (Stage){.block_number = 3, .block_position_x = {-20,5,-10}, .block_position_y = {-15,5,10}, .block_height = {10,10,3}, .block_width = {10,8,10}};
   stage[2] = (Stage){.block_number = 4, .block_position_x = {-10,10,5,16}, .block_position_y = {-10,10,3,5}, .block_height = {5,7,4,3}, .block_width = {3,6,5,6}};
-  stage[3] = (Stage){.block_number = 5, .block_position_x = {-10,10,5,16,-17}, .block_position_y = {-10,10,3,5,-20}, .block_height = {5,7,4,3,4}, .block_width = {3,6,5,6,4}};
-  stage[4] = (Stage){.block_number = 5, .block_position_x = {-10,10,5,16,-17}, .block_position_y = {-10,10,3,5,-20}, .block_height = {5,7,4,3}, .block_width = {3,6,5,6}};
+  stage[3] = (Stage){.block_number = 7, .block_position_x = {-10,10,5,16,-17,-35,-5}, .block_position_y = {-10,-10,-4,5,-20,5,10}, .block_height = {5,7,4,3,4,10,5}, .block_width = {15,20,5,40,10,20,20}};
+  stage[4] = (Stage){.block_number = 5, .block_position_x = {10,-10,15,22,-13}, .block_position_y = {10,10,3,7,-15}, .block_height = {9,12,4,8,6}, .block_width = {3,6,20,6,7}};
 
 
   int bar_x = -8;
@@ -64,7 +64,7 @@ int main(int argc, char **argv)
     bar_x = my_plot_objects(objects, objnum, t, cond, stage, selected_stage, bar_x);
     my_judge_results(objects,objnum,t,cond,stage,selected_stage,bar_x);
     
-    usleep(3 * 100); // 3 x 100us = 0.3ms ずつ停止
+    usleep(2 * 100); // 2 x 100us = 0.2ms ずつ停止
     printf("\e[%dA", cond.height+5);// 壁とパラメータ表示分で4行
   }
   return EXIT_SUCCESS;
@@ -146,8 +146,8 @@ int my_plot_objects(Object objs[], const size_t numobj, const double t, const Co
                     }
                 }
                for(int j = 0; j < stage[selected_stage].block_number; j++){
-                    if((stage[selected_stage].block_position_x[j] <= x) && (stage[selected_stage].block_position_x[j] + stage[selected_stage].block_width[j] > x)){
-                        if((stage[selected_stage].block_position_y[j] <= y) && (stage[selected_stage].block_position_y[j] + stage[selected_stage].block_height[j] > y)){
+                    if((stage[selected_stage].block_position_x[j] < x) && (stage[selected_stage].block_position_x[j] + stage[selected_stage].block_width[j] > x)){
+                        if((stage[selected_stage].block_position_y[j] < y) && (stage[selected_stage].block_position_y[j] + stage[selected_stage].block_height[j] > y)){
                             printf("\b\e[41m \e[0m");
                         }
                     }
@@ -236,7 +236,7 @@ void my_bounce(Object objs[], const size_t numobj, const Condition cond, Stage s
                     //ブロック上に接したとき
                     if((objs[i].prev_x > stage[selected_stage].block_position_x[j]) && (objs[i].prev_x < stage[selected_stage].block_position_x[j] + stage[selected_stage].block_width[j]) && (objs[i].prev_y < stage[selected_stage].block_position_y[j])){
                         objs[i].vy = -1 * cond.cor *  objs[i].vy;
-                        objs[i].y = stage[selected_stage].block_position_y[j] + stage[selected_stage].block_height[j] + (-1 * objs[i].y + stage[selected_stage].block_position_y[j] + stage[selected_stage].block_height[j]);
+                        objs[i].y = stage[selected_stage].block_position_y[j] - (objs[i].y - stage[selected_stage].block_position_y[j]);
                     }
                     //ブロック下に接したとき
                     else if((objs[i].prev_x > stage[selected_stage].block_position_x[j]) && (objs[i].prev_x < stage[selected_stage].block_position_x[j] + stage[selected_stage].block_width[j]) && (objs[i].prev_y > (stage[selected_stage].block_position_y[j]+stage[selected_stage].block_height[j]))){
@@ -251,7 +251,7 @@ void my_bounce(Object objs[], const size_t numobj, const Condition cond, Stage s
                     //ブロック右に接したとき
                     else if((objs[i].prev_y > stage[selected_stage].block_position_y[j]) && (objs[i].prev_y < stage[selected_stage].block_position_y[j] + stage[selected_stage].block_height[j]) && (objs[i].prev_x > (stage[selected_stage].block_position_x[j]+stage[selected_stage].block_width[j]))){
                         objs[i].vx = -1 * cond.cor* objs[i].vx;
-                        objs[i].x = stage[selected_stage].block_position_x[j] - (objs[i].x - stage[selected_stage].block_position_x[j]);
+                        objs[i].x = stage[selected_stage].block_position_x[j] + stage[selected_stage].block_width[j]  + (-1*objs[i].x + stage[selected_stage].block_position_x[j] + stage[selected_stage].block_width[j]);
                     }
                 }
             }
