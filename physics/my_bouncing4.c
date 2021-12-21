@@ -34,28 +34,15 @@ int main(int argc, char **argv)
 
 
   int bar_x = -8;
-  init_stage(objects,objnum,cond,stage,bar_x);
+  double t = 0;
+  t = init_stage(objects,objnum,cond,stage,bar_x);
   int selected_stage = select_stage(objects,objnum,cond,stage,bar_x);  
 
   // シミュレーション. ループは整数で回しつつ、実数時間も更新する
   const double stop_time = 4000;
-  double t = 0;
   
-  char buf;
   for (size_t i = 0 ; t <= stop_time ; i++){
     t = i * cond.dt;
-    if (kbhit()) {
-        printf("\r      \r");
-        buf = getchar();
-        if(buf == 'j'){
-            bar_x++;
-        }else if(buf == 'f'){
-            bar_x--;
-        }else if(buf == 'q'){
-            system("clear\n");
-            return 0;
-        }
-    }
     my_update_velocities(objects, objnum, cond);
     my_update_positions(objects, objnum, cond);
     my_bounce(objects, objnum, cond, stage, selected_stage,bar_x); // 壁があると仮定した場合に壁を跨いでいたら反射させる
@@ -73,10 +60,12 @@ int main(int argc, char **argv)
 // 実習: 以下に my_ で始まる関数を実装する
 // 最終的に phisics2.h 内の事前に用意された関数プロトタイプをコメントアウト
 
-void init_stage(Object objs[], const size_t numobj,const Condition cond, Stage stage[],int bar_x){
+double init_stage(Object objs[], const size_t numobj,const Condition cond, Stage stage[],int bar_x){
   objs[0] = (Object){ .m = 60.0, .y = -19.9, .vy = 2.0, .x = 0, .vx = 6};
   objs[1] = (Object){ .m = 60.0, .y =  -15, .vy = 3.0, .x = 5, .vx = -8};
   objs[2] = (Object){ .m = 100000.0, .y =  1000.0, .vy = 0.0, .x = 0, .vx = 0};
+  double t = 0;
+  return t;
 }
 
 int select_stage(Object objs[], const size_t numobj,const Condition cond, Stage stage[],int bar_x){
@@ -113,6 +102,7 @@ int my_plot_objects(Object objs[], const size_t numobj, const double t, const Co
     char buf;
     for(int y = -1*cond.height/2 -1; y < cond.height/2 + 1 ; y++){
         for(int x = -1*cond.width/2 - 1 ; x < cond.width/2 + 1 ; x++){
+            
             if(x == -1*cond.width/2 - 1){
                 if((y == cond.height/2 ) || (y == -1*cond.height/2 - 1)){
                     printf("+");
@@ -134,6 +124,18 @@ int my_plot_objects(Object objs[], const size_t numobj, const double t, const Co
                     printf("\b=");
                 }
             }else{
+                if (kbhit()) {
+                    printf("\r \r");
+                    buf = getchar();
+                    if(buf == 'j'){
+                        bar_x++;
+                    }else if(buf == 'f'){
+                        bar_x--;
+                    }else if(buf == 'q'){
+                        system("clear\n");
+                        exit(EXIT_SUCCESS);
+                    }
+                }
                 for(int i = 0; i < numobj; i++){
                     if((int)objs[i].x == x && (int)objs[i].y == y){
                         if(i == 0){
@@ -155,19 +157,7 @@ int my_plot_objects(Object objs[], const size_t numobj, const double t, const Co
             printf("\e[47m \e[0m");            
             }
         }
-        if (kbhit()) {
-                printf("\r    \r");
-                buf = getchar();
-                if(buf == 'j'){
-                    bar_x++;
-                }else if(buf == 'f'){
-                    bar_x--;
-                }else if(buf == 'q'){
-                    system("clear\n");
-                    exit(EXIT_SUCCESS);
-                }
-               
-            }
+        
     }
     printf("stage_%d  score = %3.1lf\n",selected_stage,t);
     printf("move right: j , move left: f, quit: q\n");
@@ -267,7 +257,7 @@ void my_judge_results(Object objs[], const size_t numobj, const double t, const 
                 if(objs[i].y > cond.height/2 + 7){
                     my_plot_objects(objs,numobj,t,cond,stage,num_stage,bar_x);
                     printf("\e[%dA\e[K",1);
-                    printf("time you survived was finally %lf\n",t);
+                    printf("time you survived was finally %3.1lf\n",t);
                     printf("rechallenge? y or n");
                      while (1) {
                         if (kbhit()) {

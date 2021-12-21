@@ -45,7 +45,7 @@ typedef struct stage{
 
 int kbhit(void);
 int select_stage(Object objs[], const size_t numobj,const Condition cond, Stage stage[],int bar_x);
-void init_stage(Object objs[], const size_t numobj,const Condition cond, Stage stage[],int bar_x);
+double init_stage(Object objs[], const size_t numobj,const Condition cond, Stage stage[],int bar_x);
 int my_plot_objects(Object objs[], const size_t numobj, const double t, const Condition cond, Stage stage[],int num_stage,int bar_x);
 void my_update_velocities(Object objs[], const size_t numobj, const Condition cond);
 void my_update_positions(Object objs[], const size_t numobj, const Condition cond);
