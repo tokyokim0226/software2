@@ -141,6 +141,7 @@ int my_plot_objects(Object objs[], const size_t numobj, const double t, const Co
                         if(i == 0){
                             printf("\e[30m");
                             printf("\b\e[47m\e[1mO\e[0m");
+                            
                         }else{
                             printf("\e[30m");
                             printf("\b\e[47m\e[1mO\e[0m");
