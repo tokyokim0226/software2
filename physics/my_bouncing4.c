@@ -259,7 +259,7 @@ void my_judge_results(Object objs[], const size_t numobj, const double t, const 
                     my_plot_objects(objs,numobj,t,cond,stage,num_stage,bar_x);
                     printf("\e[%dA\e[K",1);
                     printf("time you survived was finally %3.1lf\n",t);
-                    printf("rechallenge? y or n");
+                    printf("     rechallenge? y or n");
                      while (1) {
                         if (kbhit()) {
                             printf("\r    \r");
