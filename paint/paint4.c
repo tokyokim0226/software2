@@ -41,7 +41,7 @@ void clear_command(void);
 void clear_screen(void);
 
 // enum for interpret_command results
-typedef enum res{ EXIT, LINE, UNDO, SAVE, UNKNOWN, ERRNONINT, ERRLACKARGS, NOCOMMAND, CHPEN} Result;
+typedef enum res{ EXIT, LINE, UNDO, SAVE, UNKNOWN, ERRNONINT, ERRLACKARGS, NOCOMMAND, CHPEN, COLORNUMERROR, CHBACKGROUNDCOLOR} Result;
 // Result 型に応じて出力するメッセージを返す
 char *strresult(Result res);
 
@@ -50,6 +50,7 @@ void draw_line(Canvas *c, const int x0, const int y0, const int x1, const int y1
 Result interpret_command(const char *command, History *his, Canvas *c);
 void save_history(const char *filename, History *his);
 void change_pen(Canvas *c,char pen);
+void change_background_color(Canvas *c,int color);
 
 // [*] list.c のpush_backと同じ
 Command *push_command(History *his, const char *str);
@@ -84,10 +85,11 @@ int main(int argc, char **argv)
 	height = (int)h;    
     }
     char pen = '*';
+    int color = 40;
 
     char buf[bufsize];
 
-    Canvas *c = init_canvas(width,height, pen);
+    Canvas *c = init_canvas(width,height, pen, color);
     
     printf("\n"); // required especially for windows env
 
@@ -148,6 +150,7 @@ void reset_canvas(Canvas *c)
     const int width = c->width;
     const int height = c->height;
     c -> pen= '*';
+    c -> color = 40;
     memset(c->canvas[0], ' ', width*height*sizeof(char));
 }
 
@@ -168,8 +171,9 @@ void print_canvas(Canvas *c)
     for (int y = 0 ; y < height ; y++) {
 	printf("|");
 	for (int x = 0 ; x < width; x++){
-	    const char c = canvas[x][y];
-	    putchar(c);
+	    const char a = canvas[x][y];
+	    //putchar(c);
+        printf("\e[%dm%c\e[0m",c -> color,a);
 	}
 	printf("|\n");
     }
@@ -213,7 +217,7 @@ int max(const int a, const int b)
 void change_pen(Canvas *c,char pen){
     c -> pen = pen;
 }
-void change_color(Canvas *c,int color){
+void change_background_color(Canvas *c,int color){
     c -> color = color;
 }
 void draw_line(Canvas *c, const int x0, const int y0, const int x1, const int y1)
@@ -262,14 +266,22 @@ Result interpret_command(const char *command, History *his, Canvas *c)
     if (s == NULL){ // 改行だけ入力された場合
 	return UNKNOWN;
     }
-    if (strcmp(s, "chcolor") == 0) {
+    if (strcmp(s, "chback") == 0) {
 	s = strtok(NULL, " ");
     if(s == NULL){
         return ERRLACKARGS;
     }
-    int color = strtol(s);
-	change_pen(c,pen);
-	return CHPEN;
+    char *e;
+    long w = strtol(s,&e,10);
+    if (*e != '\0'){
+	    return ERRNONINT;
+    }
+    int color = (int)w;
+    if(!((color >= 40) && (color <= 47))){
+        return COLORNUMERROR;
+    }
+	change_background_color(c,color);
+	return CHBACKGROUNDCOLOR;
     }
     if (strcmp(s, "chpen") == 0) {
 	s = strtok(NULL, " ");
@@ -386,6 +398,10 @@ char *strresult(Result res){
 	return "No command in history";
     case CHPEN:
     return "changed pen";
+    case COLORNUMERROR:
+    return "the number of color is not existed";
+    case CHBACKGROUNDCOLOR:
+    return "changed backgroundcolor";
     }
     return NULL;
 }
