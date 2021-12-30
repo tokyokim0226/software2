@@ -17,13 +17,6 @@ int optimize(const double alpha, const int dim, double x[],
 	(*calc_grad)(x, g, data);
 	
 	const double error = f_value(x,data,2)/data[0].datanum;
-
-	// printf("%3d error sum = %7.4f", iter, error);
-	// for (int i = 0; i < dim; i++) {
-	//     printf(", x[%d] = %7.4f", i, x[i]);
-	// }
-    // printf(", the temperature at mtfuji is %7.4f", 3.776*x[0] + x[1]);
-	// printf("\n");
 	
 	// 最急降下法による更新
 	for (int i = 0; i < dim; i++) {
