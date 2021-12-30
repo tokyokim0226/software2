@@ -30,7 +30,7 @@ int optimize(const double alpha, const int dim, double x[],
 	    x[i] -= alpha * g[i];
 	}
     
-    if(error <= 0.1){
+    if(error <= 0.39){
         break;
     }
     }
