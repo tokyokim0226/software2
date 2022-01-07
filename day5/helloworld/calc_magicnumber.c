@@ -9,7 +9,6 @@ int main(){
     }
     float buf[4];
     
-    // 1バイトを100個分読み出す。rsize には読み出した個数が格納される
     size_t rsize = fread(buf, sizeof(float), 4, fp); 
     
     printf("%zu read\n", rsize);
