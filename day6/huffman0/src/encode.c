@@ -121,6 +121,7 @@ void traverse_tree(const int depth, const Node *np)
 {			  
      
     static char code[CODELEN] = {'\0'};
+    
     if(np->symbol != -1){
         if(np->symbol == '\n'){
             printf("\'\\n\':");
@@ -128,9 +129,9 @@ void traverse_tree(const int depth, const Node *np)
         }else{
             printf("\'%c\':",np->symbol);
         }
-        printf("%s :",code);
+        printf(" %s :",code);
         
-        printf("%d",symbol_count[np->symbol]);
+        printf(" %d",symbol_count[np->symbol]);
         printf("\n");
     }
 
@@ -143,7 +144,11 @@ void traverse_tree(const int depth, const Node *np)
     printf("+--%c--",code[depth]);
     traverse_tree(depth + 1, np->left);
     for(int i = 0; i < depth; i++){
-        printf("|     ");
+        if(code[i] == '0'){
+            printf("|     ");
+        }else{
+            printf("      ");
+        }
     }
     code[depth] = '1';
     for(int i = depth + 1; i < CODELEN; i++){
